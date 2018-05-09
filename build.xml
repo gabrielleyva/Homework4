@@ -1,58 +1,60 @@
 <?xml version="1.0" ?>
 
-	<!-- 
+	<!--
 	***************************************************************************
 	1)  You need to have the most recently updated SRS project and SPRR project
-		at the same level as the external SRS project. The internal SRS project 
+		at the same level as the external SRS project. The internal SRS project
 		should be named 'srs' and the SPRR project should be named 'srsrc'.
-		If you have named your internal SRS or SPRR project something other 
-		than the above in quotes, please modify the srs.root and/or srsrc.root 
+		If you have named your internal SRS or SPRR project something other
+		than the above in quotes, please modify the srs.root and/or srsrc.root
 		property below to reflect your change to this file LOCALLY.
-		
+
 		You will need Tomcat and a JRE installed. You will also need to set the
 		TOMCAT_HOME and JAVA_HOME environment variables on your system. You also
 		need ant installed: v1.6.2 or greater.
-		
+
 	2) 	ant refresh_files
-			Will copy all necessary files from the main SRS project and 
+			Will copy all necessary files from the main SRS project and
 			perform a compile.
-			
+
 		ant compile_webinf_java
 			Will rebuild the Java files
-			
-		ant clean 
+
+		ant clean
 			Will remove the compiled class files
-			
-	    ant clean_project 
+
+	    ant clean_project
 	    	Will remove all files that are not stored in VSS
-			
+
 		ant clean_build
 			Will remove the compiled class files and compile the project
-			
+
 	3) 	ant copy_to_staging
-			Will copy all necessary files to a staging directory that you 
+			Will copy all necessary files to a staging directory that you
 			desigate in order to copy the files to the pruction server.
 			Currently, this directory is at C:\SRS_EXT, to change the path
 			modify the staging property on the LOCAL copy of this file.
 			Note: this does not copy source files.
+
+			sjbdjhbjfbsjdbfjsbdjfb
 	***************************************************************************
 	-->
 
 <project name="SRS_QDI_External" default="compile_webinf_java">
 	<!-- set the properties -->
-	<property name="eclipse.root" location="."/>	
+	<property name="eclipse.root" location="."/>
 	<property name="java.build" location="${eclipse.root}/WEB-INF/classes"/>
 	<property name="java.src" location="${eclipse.root}/WEB-INF/src"/>
 	<property name="java.lib" location="${eclipse.root}/WEB-INF/lib"/>
-	<property name="srs.root" location="../SRS_12152008"/>	
-	<property name="srsrc.root" location="../SRSRC/rc"/>	
-	<property name="staging" location="C:/SRS_EXT"/>	
+	<property name="srs.root" location="../SRS_12152008"/>
+	<property name="srsrc.root" location="../SRSRC/rc"/>
+	<property name="staging" location="C:/SRS_EXT"/>
 	<property environment="env"/>
 	<property name="tomcat.home" location="${env.TOMCAT_HOME}"/>
-	
-	<!-- 
+
+	<!--
 	***************************************************************************
-	end of PROPERTIES set-up 
+	end of PROPERTIES set-up
 	***************************************************************************
 	-->
 
@@ -61,39 +63,39 @@
 	       <format property="FORMAT_DATE" pattern="MM/dd/yyyy hh:mm:ss aa" locale="en"/>
 	    </tstamp>
 		<echo message="time started: ${FORMAT_DATE}"/>
-		
+
 		<!-- set the class paths -->
 		<path id="project.class.path">
 			<path location="${java.build}"/>
-			<fileset dir="${tomcat.home}/bin"> 
-		    	<include name="*.jar"/> 
-		    </fileset> 
-		    <fileset dir="${tomcat.home}/server/lib"> 
-		          <include name="*.jar"/> 
-		    </fileset> 
-		    <fileset dir="${tomcat.home}/common/lib"> 
-		      	<include name="*.jar"/> 
+			<fileset dir="${tomcat.home}/bin">
+		    	<include name="*.jar"/>
+		    </fileset>
+		    <fileset dir="${tomcat.home}/server/lib">
+		          <include name="*.jar"/>
+		    </fileset>
+		    <fileset dir="${tomcat.home}/common/lib">
+		      	<include name="*.jar"/>
 		        <exclude name="itext*"/>
-		    </fileset> 
-		    <fileset dir="${tomcat.home}/common/endorsed"> 
-		      	<include name="*.jar"/> 
-		    </fileset> 
-		    <fileset dir="${java.lib}"> 
-		      	<include name="*.jar"/> 
-		    </fileset> 
-		    <dirset dir="${java.lib}"> 
-		      	<include name="**"/> 
-		    </dirset> 
-		</path>				
+		    </fileset>
+		    <fileset dir="${tomcat.home}/common/endorsed">
+		      	<include name="*.jar"/>
+		    </fileset>
+		    <fileset dir="${java.lib}">
+		      	<include name="*.jar"/>
+		    </fileset>
+		    <dirset dir="${java.lib}">
+		      	<include name="**"/>
+		    </dirset>
+		</path>
 	</target>
- 	
+
 	<!-- compile Java files  -->
 	<target name="compile_webinf_java" depends="init">
 		<javac srcdir="${java.src}" destdir="${java.build}"
 	    	debug="true" debuglevel="lines, vars, and source">
 			<classpath refid="project.class.path"/>
 		</javac>
-		
+
 		<!-- include the other files needed from the src directory -->
 		<copy todir="${java.build}">
 			<fileset dir="${java.src}">
@@ -102,30 +104,30 @@
 			</fileset>
 		</copy>
 	</target>
-			
-	<!-- 
+
+	<!--
 	***************************************************************************
-	end of DEFAULT target and dependencies 
+	end of DEFAULT target and dependencies
 	***************************************************************************
 	-->
-	
+
 	<!-- clean out the project, called by clean_build -->
 	<target name="clean">
-		<delete includeemptydirs="true"> 
+		<delete includeemptydirs="true">
 			<fileset dir="${java.build}"/>
 		</delete>
 		<mkdir dir="${java.build}"/>
 	</target>
 
-	<!-- clean out the project and do a build, 
+	<!-- clean out the project and do a build,
 	     call this manually from eclipse to empty directories before building -->
 	<target name="clean_build" depends="clean">
 		<antcall target="compile_webinf_java"/>
 	</target>
 
-	<!-- 
+	<!--
 	***************************************************************************
-	end of CLEAN_BUILD target and dependencies 
+	end of CLEAN_BUILD target and dependencies
 	***************************************************************************
 	-->
 
@@ -168,12 +170,12 @@
 		</copy>
 		<!-- get the Java files -->
 		<copy file="${srs.root}/WEB-INF/src/srsCommon/srsMessageConsole.java" todir="${eclipse.root}/WEB-INF/src/srsCommon"/>
-		
+
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/beans/DataBean.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/beans"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/beans/QDIRoadmapInfoBean.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/beans"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/beans/QDIScoreCardBean.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/beans"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/beans/QDISupplierEvalsBean.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/beans"/>
-		
+
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/pdf/PDFInterface.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/pdf"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/pdf/PDFShared.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/pdf"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/pdf/ScoresheetExternalPDF.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp/pdf"/>
@@ -199,20 +201,20 @@
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiRoadmap.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiRoadmapDisp.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
 
-		<!-- This file has no also become specific to external use and has been added to the VSS external project 
+		<!-- This file has no also become specific to external use and has been added to the VSS external project
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiScoreCard.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/> -->
-		
+
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiScoreCardSprrExt.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiScoreCardSprrExtDisp.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiScoreCardSprrInt.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiSupplierEvalsSprrInt.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
 		<copy file="${srs.root}/WEB-INF/src/srsqdiApp/srsqdiSupplierEvalsSprrIntDisp.java" todir="${eclipse.root}/WEB-INF/src/srsqdiApp"/>
-		
+
 		<mkdir dir="${java.build}"/>
-		
+
 		<antcall target="compile_webinf_java"/>
 	</target>
-	
+
 	<target name="clean_project">
 		<!-- delete everything that is not stored in VSS -->
 		<delete dir="${eclipse.root}/images"/>
@@ -222,21 +224,21 @@
 		<delete dir="${java.lib}/blowfish"/>
 		<delete dir="${java.lib}/com"/>
 		<delete file="${java.src}/srsCommon/srsMessageConsole.java"/>
-		<delete dir="${java.src}/srsqdiApp"/>		
+		<delete dir="${java.src}/srsqdiApp"/>
 	</target>
 
-	
-	<!-- 
+
+	<!--
 	***************************************************************************
-	end of REFRESH_FILES  
+	end of REFRESH_FILES
 	***************************************************************************
-	-->	
-	
+	-->
+
 	<target name="copy_to_staging">
 		<delete includeemptydirs="true">
 		    <fileset dir="${staging}" includes="**/*"/>
 		</delete>
-		
+
 		<copy todir="${staging}/images">
 			<fileset dir="${eclipse.root}/images"/>
 		</copy>
@@ -252,7 +254,7 @@
 		<!--
 		<copy todir="${staging}/WEB-INF/lib">
 			<fileset dir="${eclipse.root}/WEB-INF/lib"/>
-		</copy> 
+		</copy>
 		<copy file="${eclipse.root}/WEB-INF/lib/itext-1.3.jar" todir="${staging}/WEB-INF/lib"/>
 		-->
 		<copy file="${eclipse.root}/WEB-INF/lib/sprr_shared_ext.jar" todir="${staging}/WEB-INF/lib"/>
@@ -260,19 +262,19 @@
 		<copy file="${eclipse.root}/WEB-INF/web.xml" todir="${staging}/WEB-INF"/>
 	</target>
 
-	<!-- 
+	<!--
 	***************************************************************************
-	end of COPY_TO_STAGING  
+	end of COPY_TO_STAGING
 	***************************************************************************
-	-->	
+	-->
 
-	<target name="jar_qdi" depends="compile_webinf_java, copy_to_staging">	
+	<target name="jar_qdi" depends="compile_webinf_java, copy_to_staging">
 		<jar destfile="${staging}/WEB-INF/lib/srsqdiApp.jar"
 	       	basedir="${java.build}"
 	       	includes="**"/>
-		
+
 		<!-- delete the class files that we used to make this jar -->
-		<delete includeemptydirs="true"> 
+		<delete includeemptydirs="true">
 			<fileset dir="${staging}/WEB-INF/classes"/>
 		</delete>
 	</target>
